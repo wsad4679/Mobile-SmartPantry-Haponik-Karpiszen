@@ -1,0 +1,23 @@
+[
+  {
+    "UUID": "50f62659-2ae1-4c7d-a30e-d3ae0ce72da1",
+    "Name": "Canned Tomato Soup",
+    "Quantity": "67",
+    "Category": "Food",
+    "ImageRef": "soup"
+  },
+  {
+    "UUID": "d95cdaab-47f6-4e27-8e1b-4ba8889ad697",
+    "Name": "Aid-kit",
+    "Quantity": "11",
+    "Category": "Life Support",
+    "ImageRef": "aid"
+  },
+  {
+    "UUID": "fa4729c2-da78-40c2-9694-938c8e54b8a5",
+    "Name": "Drill",
+    "Quantity": "3",
+    "Category": "Tools",
+    "ImageRef": "drill"
+  }
+]
