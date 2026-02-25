@@ -1,4 +1,4 @@
-package com.example.mobile_smart_pantry_project_iv
+package com.example.mobile_smart_pantry_project_iv.model
 
 import kotlinx.serialization.Serializable
 
