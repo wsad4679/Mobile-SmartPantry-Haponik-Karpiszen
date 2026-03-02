@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.mobile_smart_pantry_project_iv.databinding.ActivityMainBinding
+import com.example.mobile_smart_pantry_project_iv.model.Product
 import kotlinx.serialization.json.Json
 import java.io.File
 

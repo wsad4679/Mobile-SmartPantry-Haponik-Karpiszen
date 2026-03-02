@@ -31,7 +31,6 @@
         android:orientation="horizontal"
         android:gravity="center"
         >
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,8 +43,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
-
-
     </LinearLayout>
 
     <EditText
@@ -54,6 +51,7 @@
         android:layout_height="wrap_content"
         android:hint="Link lub referencja obrazu"
         />
+
     <Button
         android:id="@+id/addProductButton"
         android:layout_width="wrap_content"
@@ -63,7 +61,6 @@
         android:layout_marginTop="20dp"
         />
 
-
     <ListView
         android:id="@+id/productListView"
         android:layout_width="match_parent"
@@ -71,6 +68,4 @@
         android:layout_marginTop="20dp"
         android:dividerHeight="6dp"
         />
-
-
 </LinearLayout>
