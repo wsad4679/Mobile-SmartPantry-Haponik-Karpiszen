@@ -67,7 +67,7 @@
         android:id="@+id/btnDown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="Increase quantity"
+        android:contentDescription="Decrease quantity"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/arrow_down"
         android:scaleType="centerInside"
