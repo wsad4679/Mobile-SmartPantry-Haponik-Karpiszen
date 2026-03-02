@@ -10,7 +10,6 @@
     android:orientation="vertical"
     android:padding="10dp"
     >
-
     <EditText
         android:id="@+id/productNameEditText"
         android:layout_width="match_parent"
@@ -60,12 +59,39 @@
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         />
-
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
     <ListView
         android:id="@+id/productListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="20dp"
         android:dividerHeight="6dp"
-        />
+        tools:ignore="NestedScrolling" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        >
+        <Button
+            android:id="@+id/increaseProductButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Zwiększ ilość"
+            />
+        <Button
+            android:id="@+id/decreaseProductButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Zmniejsz ilość"
+            />
+        </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
