@@ -2,6 +2,7 @@ package com.example.mobile_smart_pantry_project_iv
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.ListView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +30,8 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+
+
         fun dataParser() {
             try {
                 val inputStream = resources.openRawResource(R.raw.pantry)
@@ -50,6 +53,25 @@ class MainActivity : AppCompatActivity() {
         }
 
         dataParser()
-        Log.v("Debug", inventoryList.toString())
+        Log.v("inventoryList", inventoryList.toString())
+
+        val productsListView : ListView = binding.productListView
+        val adapter = PantryAdapter(this, inventoryList)
+
+        productsListView.adapter = adapter
+
+        binding.productNameSearchEditText.setOnKeyListener { view, i, event ->
+
+            val filteringText = binding.productNameSearchEditText.text.toString()
+
+            val filteredProducts = inventoryList.filter {
+                it.Name.contains(filteringText, ignoreCase = true)
+            }
+
+            val filteredAdapter = PantryAdapter(this, filteredProducts)
+            productsListView.adapter = filteredAdapter
+
+            false
+        }
     }
 }
