@@ -19,7 +19,8 @@
         android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        >
 
         <TextView
             android:id="@+id/productNameTextView"
@@ -27,13 +28,16 @@
             android:textSize="18sp"
             android:text="Name"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            />
 
         <TextView
             android:id="@+id/productCategoryTextView"
             android:text="Category"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"/>
 
         <TextView
             android:id="@+id/productQuantityTextView"
@@ -41,6 +45,32 @@
             android:textSize="15sp"
             android:text="Quantity: "
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+    <ImageButton
+        android:id="@+id/btnUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Increase quantity"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/arrow_up"
+        android:scaleType="centerInside"
+        />
+    <ImageButton
+        android:id="@+id/btnDown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Decrease quantity"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/arrow_down"
+        android:scaleType="centerInside"
+        />
     </LinearLayout>
 </LinearLayout>
