@@ -11,15 +11,15 @@
     android:padding="10dp"
     >
     <EditText
-        android:id="@+id/productNameEditText"
+        android:id="@+id/productNameFilterEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nazwa towaru"
+        android:hint="Wyszukaj nazwę towaru"
         android:layout_margin="7dp"
         />
 
     <Spinner
-        android:id="@+id/categorySpinner"
+        android:id="@+id/categoryFilterSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"

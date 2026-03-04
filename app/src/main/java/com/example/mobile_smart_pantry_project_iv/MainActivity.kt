@@ -2,6 +2,7 @@ package com.example.mobile_smart_pantry_project_iv
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -19,6 +20,7 @@ class MainActivity : AppCompatActivity() {
 
     private val inventoryList = mutableListOf<Product>()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -31,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-
+//-----------------------|     Parsowanie danych z json do listy     |-------------------------------------------------------------------------------------------------------
         fun dataParser() {
             try {
                 val inputStream = resources.openRawResource(R.raw.pantry)
@@ -54,22 +56,58 @@ class MainActivity : AppCompatActivity() {
 
         dataParser()
         Log.v("inventoryList", inventoryList.toString())
+//------------------------------------------------------------------------------------------------------------------------------------
+
+
 
         val productsListView : ListView = binding.productListView
-        val adapter = PantryAdapter(this, inventoryList)
+        val productsAdapter = PantryAdapter(this, inventoryList)
 
-        productsListView.adapter = adapter
+        productsListView.adapter = productsAdapter
 
-        binding.productNameSearchEditText.setOnKeyListener { view, i, event ->
 
-            val filteringText = binding.productNameSearchEditText.text.toString()
+
+
+        val categorySpinner = binding.categoryFilterSpinner
+
+        val categoriesForSpinner = listOf("All")+inventoryList.map { it.Category }.distinct() // pobranie wszystkich kategori z listy produktów
+        Log.i("Kategorie", categoriesForSpinner.toString())
+
+
+        val categoriesAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoriesForSpinner)
+        categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        categorySpinner.adapter = categoriesAdapter
+
+        val filteredProducts = inventoryList.map {it}
+        Log.i("Produkty", filteredProducts.toString())
+
+        // TODO naprawić filtrowanie po kategorii
+//        categorySpinner.setOnClickListener {
+//            if(categorySpinner.selectedItem.toString() != "All")
+//            {
+//                filteredProducts.filter { it.Category == categorySpinner.selectedItem.toString() }
+//                productsListView.adapter = PantryAdapter(this, filteredProducts)
+//            }
+//            else{
+//                productsListView.adapter = PantryAdapter(this, filteredProducts)
+//            }
+//
+//        }
+
+
+
+
+
+        binding.productNameFilterEditText.setOnKeyListener { view, i, event ->
+
+            val filteringText = binding.productNameFilterEditText.text.toString()
 
             val filteredProducts = inventoryList.filter {
                 it.Name.contains(filteringText, ignoreCase = true)
             }
 
-            val filteredAdapter = PantryAdapter(this, filteredProducts)
-            productsListView.adapter = filteredAdapter
+            productsListView.adapter = PantryAdapter(this, filteredProducts)
 
             false
         }
