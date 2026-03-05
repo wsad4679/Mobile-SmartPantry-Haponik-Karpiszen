@@ -1,5 +1,6 @@
 package com.example.mobile_smart_pantry_project_iv
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ class PantryAdapter (private val context: Context,
                     private val products: List<Product>
     ): ArrayAdapter<Product>(context, 0, products) {
 
+    @SuppressLint("SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 
         val itemView = convertView ?: LayoutInflater.from(context).inflate(
@@ -36,11 +38,9 @@ class PantryAdapter (private val context: Context,
 
         nameTextView.text = product.Name
         categoryTextView.text = product.Category
-        quantityTextView.text = product.Quantity.toString()
+        quantityTextView.text = "Quantity: ${product.Quantity}"
 
-        if (resId !=0) productImageView.setImageResource(resId) else productImageView.setImageResource(R.drawable.ic_launcher_foreground)
-
-
+        if (resId !=0) productImageView.setImageResource(resId) else productImageView.setImageResource(R.drawable.error)
 
         return itemView
     }

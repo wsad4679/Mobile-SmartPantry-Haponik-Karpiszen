@@ -1,7 +1,10 @@
 package com.example.mobile_smart_pantry_project_iv
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
@@ -64,8 +67,21 @@ class MainActivity : AppCompatActivity() {
         val productsAdapter = PantryAdapter(this, inventoryList)
 
         productsListView.adapter = productsAdapter
+        productsListView.setOnItemClickListener { _, _, position, _ ->
+            productsListView.setItemChecked(position, true)
+        }
 
+        val incBtn = binding.increaseProductButton
+        val decrBtn = binding.decreaseProductButton
 
+        incBtn.setOnClickListener {
+            val checkedProduct = productsListView.checkedItemPosition
+            Log.i("Debug", checkedProduct.toString())
+        }
+
+        decrBtn.setOnClickListener {
+
+        }
 
 
         val categorySpinner = binding.categoryFilterSpinner
