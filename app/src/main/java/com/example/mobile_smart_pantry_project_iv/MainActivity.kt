@@ -2,6 +2,8 @@ package com.example.mobile_smart_pantry_project_iv
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
@@ -59,15 +61,17 @@ class MainActivity : AppCompatActivity() {
 //------------------------------------------------------------------------------------------------------------------------------------
 
 
-
+//---------------------------------------|     Przypisanie produktów do listy z użyciem adaptera     |---------------------------------------------------------------------------------------------
         val productsListView : ListView = binding.productListView
         val productsAdapter = PantryAdapter(this, inventoryList)
 
         productsListView.adapter = productsAdapter
 
 
+//------------------------------------------------------------------------------------------------------------------------------------
 
 
+// -------------------|     Filtrowanie po kategori z użyciem spinnera     |-----------------------------------------------------------------------------------------------------------------
         val categorySpinner = binding.categoryFilterSpinner
 
         val categoriesForSpinner = listOf("All")+inventoryList.map { it.Category }.distinct() // pobranie wszystkich kategori z listy produktów
@@ -79,32 +83,47 @@ class MainActivity : AppCompatActivity() {
 
         categorySpinner.adapter = categoriesAdapter
 
-        val filteredProducts = inventoryList.map {it}
-        Log.i("Produkty", filteredProducts.toString())
 
-        // TODO naprawić filtrowanie po kategorii
-//        categorySpinner.setOnClickListener {
-//            if(categorySpinner.selectedItem.toString() != "All")
-//            {
-//                filteredProducts.filter { it.Category == categorySpinner.selectedItem.toString() }
-//                productsListView.adapter = PantryAdapter(this, filteredProducts)
-//            }
-//            else{
-//                productsListView.adapter = PantryAdapter(this, filteredProducts)
-//            }
-//
-//        }
+        var filteredProducts = inventoryList.map { it } // var aby można było jednocześnie filtrować po kategorii i nazwie
+
+        categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                p1: View?,
+                position: Int,
+                p3: Long
+            ) {
+                val selectedItem = parent?.getItemAtPosition(position).toString()
+
+                if (selectedItem == "All") {
+                    filteredProducts = inventoryList.map { it }
+                    productsListView.adapter = PantryAdapter(this@MainActivity, filteredProducts)
+                    return
+                }
+
+                filteredProducts = inventoryList.filter {it.Category == selectedItem}
+
+                productsListView.adapter = PantryAdapter(this@MainActivity, filteredProducts)
 
 
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                //nothing
+            }
+
+        }
+
+//------------------------------------------------------------------------------------------------------------------------------------
 
 
-
+//--------------------------|      Filtrowanie produktów po nazwie z EditText     |----------------------------------------------------------------------------------------------------------
         binding.productNameFilterEditText.setOnKeyListener { view, i, event ->
 
             val filteringText = binding.productNameFilterEditText.text.toString()
 
-            val filteredProducts = inventoryList.filter {
-                it.Name.contains(filteringText, ignoreCase = true)
+            filteredProducts = filteredProducts.filter {
+                it.Name.contains(filteringText, ignoreCase = true) //ciągłe sprawdzanie czy nazwa zawiera podany ciąg string
             }
 
             productsListView.adapter = PantryAdapter(this, filteredProducts)
