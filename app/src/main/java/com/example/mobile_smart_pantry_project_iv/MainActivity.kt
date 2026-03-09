@@ -13,6 +13,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.widget.addTextChangedListener
 import com.example.mobile_smart_pantry_project_iv.databinding.ActivityMainBinding
 import com.example.mobile_smart_pantry_project_iv.model.Product
 import kotlinx.serialization.encodeToString
@@ -27,6 +28,10 @@ class MainActivity : AppCompatActivity() {
 
     private var selectedListElement = -1
 
+    private var filteredProducts = mutableListOf<Product>() // var aby można było jednocześnie filtrować po kategorii i nazwie
+    private var selectedCategory = "All"
+    private var filterText = ""
+
 
     private fun dataParser() {
         try {
@@ -38,17 +43,23 @@ class MainActivity : AppCompatActivity() {
                     .use { it.readText() }
             }
 
-            val json = Json { ignoreUnknownKeys = true }
+            val json = Json {
+                ignoreUnknownKeys = true
+                prettyPrint = true // ładne formatowanie JSON
+            }
             val loadedList = json.decodeFromString<List<Product>>(jsonString)
 
             inventoryList.clear()
             inventoryList.addAll(loadedList)
+            filteredProducts = inventoryList
 
         } catch (e: Exception) {
             Toast.makeText(this, "File read error!", Toast.LENGTH_SHORT).show()
             e.printStackTrace()
         }
     }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +74,6 @@ class MainActivity : AppCompatActivity() {
         dataParser()
 
         Log.v("inventoryList", inventoryList.toString())
-//------------------------------------------------------------------------------------------------------------------------------------
 
 
 //---------------------------------------|     Przypisanie produktów do listy z użyciem adaptera     |---------------------------------------------------------------------------------------------
@@ -77,51 +87,21 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-//------------------------------------------------------------------------------------------------------------------------------------
+        // -------------------|     Funkcja filtrująca    |-----------------------------------------------------------------------------------------------------------------
 
+        fun filterProducts(){
+            filteredProducts = inventoryList.filter { product ->
+                val categoryFilter = selectedCategory == "All" || product.Category == selectedCategory // jeśli wybrano all to zwraca true, jeśli nie to sprawdza jakie produkty mają tą kategorie (tak: true | nie: false)
 
-// -------------------|     Filtrowanie po kategori z użyciem spinnera     |-----------------------------------------------------------------------------------------------------------------
-        val categorySpinner = binding.categoryFilterSpinner
+                val nameMatch = product.Name.contains(filterText, ignoreCase = true) // zwraca true jeśli produkt zawiera dany fragment tekstu
 
-        val categoriesForSpinner = listOf("All")+inventoryList.map { it.Category }.distinct() // pobranie wszystkich kategori z listy produktów
-        Log.i("Kategorie", categoriesForSpinner.toString())
+                categoryFilter && nameMatch // produkt zostanie dodany jeśli obie zmienne mają true
+            }.toMutableList() //aby typy się zgadzały, filter zwraca listOf a  filtered products jest mutableListOf
 
-
-        val categoriesAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoriesForSpinner)
-        categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-        categorySpinner.adapter = categoriesAdapter
-
-
-        var filteredProducts = inventoryList.map { it } // var aby można było jednocześnie filtrować po kategorii i nazwie
-
-        categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                p1: View?,
-                position: Int,
-                p3: Long
-            ) {
-                val selectedItem = parent?.getItemAtPosition(position).toString()
-
-                if (selectedItem == "All") {
-                    filteredProducts = inventoryList.map { it }
-                    productsListView.adapter = PantryAdapter(this@MainActivity, filteredProducts)
-                    return
-                }
-
-                filteredProducts = inventoryList.filter {it.Category == selectedItem}
-
-                productsListView.adapter = PantryAdapter(this@MainActivity, filteredProducts)
-
-
-            }
-
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-                //nothing
-            }
+            productsListView.adapter = PantryAdapter(this, filteredProducts)
 
         }
+
 
 //------------------------ |      Usuwanie elementów z listy      |------------------------------------------------------------------------------------------------------------
 
@@ -131,16 +111,25 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Najpierw zaznacz element", Toast.LENGTH_SHORT).show()
             }
             else{
-                inventoryList.removeAt(selectedListElement)
-                productsListView.adapter = PantryAdapter (this,inventoryList)
-                selectedListElement = -1
+                val productToRemove = filteredProducts[selectedListElement] // pobiera zaznaczony element przy filtrowaniu np. Drill
+                inventoryList.remove(productToRemove) // Usuwa konkretnie Drill a nie np. produkt o indeksie [2]
+                filterProducts() // aktualizacja widoku po usunięciu
+
+
+                selectedListElement = -1 //usunięcie z pamięci indeksu starego zaznaczenia
                 productsListView.clearChoices()
             }
         }
 
+
+        //------------------------ |      Zapisywanie do JSON     |------------------------------------------------------------------------------------------------------------
+
         binding.saveBtn.setOnClickListener {
             try {
-                val json = Json { ignoreUnknownKeys = true }
+                val json = Json {
+                    ignoreUnknownKeys = true
+                    prettyPrint = true // ładne formatowanie JSON
+                }
                 val jsonString = json.encodeToString(inventoryList)
 
                 openFileOutput("pantry.json", MODE_PRIVATE).use {
@@ -155,18 +144,47 @@ class MainActivity : AppCompatActivity() {
 
 
 
-//--------------------------|      Filtrowanie produktów po nazwie z EditText     |----------------------------------------------------------------------------------------------------------
-        binding.productNameFilterEditText.setOnKeyListener { view, i, event ->
 
-            val filteringText = binding.productNameFilterEditText.text.toString()
 
-            filteredProducts = inventoryList.filter {
-                it.Name.contains(filteringText, ignoreCase = true) //ciągłe sprawdzanie czy nazwa zawiera podany ciąg string
+
+        // -------------------|     Filtrowanie po kategori z użyciem spinnera     |-----------------------------------------------------------------------------------------------------------------
+        val categorySpinner = binding.categoryFilterSpinner
+
+        val categoriesForSpinner = listOf("All")+inventoryList.map { it.Category }.distinct() // pobranie wszystkich kategori z listy produktów
+        Log.i("Kategorie", categoriesForSpinner.toString())
+
+
+        val categoriesAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoriesForSpinner)
+        categoriesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        categorySpinner.adapter = categoriesAdapter
+
+
+
+        categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                p1: View?,
+                position: Int,
+                p3: Long
+            ) {
+                selectedCategory = parent?.getItemAtPosition(position).toString()
+                filterProducts()
+
             }
 
-            productsListView.adapter = PantryAdapter(this, filteredProducts)
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                //nothing
+            }
 
-            false
+        }
+
+
+//--------------------------|      Filtrowanie produktów po nazwie z EditText     |----------------------------------------------------------------------------------------------------------
+        binding.productNameFilterEditText.addTextChangedListener {
+
+            filterText = it.toString()
+            filterProducts()
         }
 
 
