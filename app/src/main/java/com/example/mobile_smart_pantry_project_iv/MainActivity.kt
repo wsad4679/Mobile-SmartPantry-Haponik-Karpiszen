@@ -1,5 +1,6 @@
 package com.example.mobile_smart_pantry_project_iv
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.widget.AdapterView
@@ -14,6 +15,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.mobile_smart_pantry_project_iv.databinding.ActivityMainBinding
 import com.example.mobile_smart_pantry_project_iv.model.Product
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
 
@@ -21,8 +23,32 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
 
-    private val inventoryList = mutableListOf<Product>()
+    private var inventoryList = mutableListOf<Product>()
 
+    private var selectedListElement = -1
+
+
+    private fun dataParser() {
+        try {
+            val jsonString = try {
+                openFileInput("pantry.json").bufferedReader().use { it.readText() }
+            } catch (e: Exception) {
+                resources.openRawResource(R.raw.pantry)
+                    .bufferedReader()
+                    .use { it.readText() }
+            }
+
+            val json = Json { ignoreUnknownKeys = true }
+            val loadedList = json.decodeFromString<List<Product>>(jsonString)
+
+            inventoryList.clear()
+            inventoryList.addAll(loadedList)
+
+        } catch (e: Exception) {
+            Toast.makeText(this, "File read error!", Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,30 +60,8 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-
-//-----------------------|     Parsowanie danych z json do listy     |-------------------------------------------------------------------------------------------------------
-        fun dataParser() {
-            try {
-                val inputStream = resources.openRawResource(R.raw.pantry)
-                val jsonString = inputStream.bufferedReader().use { it.readText() }
-                val json = Json { ignoreUnknownKeys = true }
-                val loadedList = json.decodeFromString<List<Product>>(jsonString)
-
-                inventoryList.clear()
-                inventoryList.addAll(loadedList)
-
-            } catch (e: java.lang.Exception) {
-                Toast.makeText(
-                    this,
-                    "Błąd odczytu pliku!",
-                    Toast.LENGTH_SHORT
-                ).show()
-                e.printStackTrace()
-            }
-        }
-
         dataParser()
+
         Log.v("inventoryList", inventoryList.toString())
 //------------------------------------------------------------------------------------------------------------------------------------
 
@@ -69,20 +73,11 @@ class MainActivity : AppCompatActivity() {
         productsListView.adapter = productsAdapter
         productsListView.setOnItemClickListener { _, _, position, _ ->
             productsListView.setItemChecked(position, true)
+            selectedListElement = position
         }
 
-        val incBtn = binding.increaseProductButton
-        val decrBtn = binding.decreaseProductButton
-
-        incBtn.setOnClickListener {
-            val checkedProduct = productsListView.checkedItemPosition
-            Log.i("Debug", checkedProduct.toString())
-        }
 
 //------------------------------------------------------------------------------------------------------------------------------------
-        decrBtn.setOnClickListener {
-
-        }
 
 
 // -------------------|     Filtrowanie po kategori z użyciem spinnera     |-----------------------------------------------------------------------------------------------------------------
@@ -128,7 +123,36 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-//------------------------------------------------------------------------------------------------------------------------------------
+//------------------------ |      Usuwanie elementów z listy      |------------------------------------------------------------------------------------------------------------
+
+        binding.deleteBtn.setOnClickListener{
+            if (selectedListElement == -1)
+            {
+                Toast.makeText(this, "Najpierw zaznacz element", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                inventoryList.removeAt(selectedListElement)
+                productsListView.adapter = PantryAdapter (this,inventoryList)
+                selectedListElement = -1
+                productsListView.clearChoices()
+            }
+        }
+
+        binding.saveBtn.setOnClickListener {
+            try {
+                val json = Json { ignoreUnknownKeys = true }
+                val jsonString = json.encodeToString(inventoryList)
+
+                openFileOutput("pantry.json", MODE_PRIVATE).use {
+                    it.write(jsonString.toByteArray())
+                }
+
+            } catch (e: Exception) {
+                Toast.makeText(this, "File save error!", Toast.LENGTH_SHORT).show()
+                e.printStackTrace()
+            }
+        }
+
 
 
 //--------------------------|      Filtrowanie produktów po nazwie z EditText     |----------------------------------------------------------------------------------------------------------
@@ -136,7 +160,7 @@ class MainActivity : AppCompatActivity() {
 
             val filteringText = binding.productNameFilterEditText.text.toString()
 
-            filteredProducts = filteredProducts.filter {
+            filteredProducts = inventoryList.filter {
                 it.Name.contains(filteringText, ignoreCase = true) //ciągłe sprawdzanie czy nazwa zawiera podany ciąg string
             }
 
@@ -144,5 +168,7 @@ class MainActivity : AppCompatActivity() {
 
             false
         }
+
+
     }
 }

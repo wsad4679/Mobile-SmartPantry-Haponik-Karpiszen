@@ -2,11 +2,15 @@ package com.example.mobile_smart_pantry_project_iv
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.mobile_smart_pantry_project_iv.model.Product
@@ -41,6 +45,29 @@ class PantryAdapter (private val context: Context,
         quantityTextView.text = "Quantity: ${product.Quantity}"
 
         if (resId !=0) productImageView.setImageResource(resId) else productImageView.setImageResource(R.drawable.error)
+
+        if (product.Quantity<=5){
+            Log.e("ProductData", product.Name)
+            Log.e("ProductData", product.Quantity.toString())
+            itemView.findViewById<LinearLayout>(R.id.backgroudLinearLayout).setBackgroundColor(Color.RED)
+        }
+        else{
+            itemView.findViewById<LinearLayout>(R.id.backgroudLinearLayout).setBackgroundColor(Color.MAGENTA)
+        }
+        val incBtn = itemView.findViewById<ImageButton>(R.id.incBtn)
+        val decrBtn = itemView.findViewById<ImageButton>(R.id.decrBtn)
+
+        incBtn.setOnClickListener {
+            product.Quantity++;
+            notifyDataSetChanged()
+        }
+
+        decrBtn.setOnClickListener {
+            if (product.Quantity > 0) {
+                product.Quantity--;
+                notifyDataSetChanged()
+            }
+        }
 
         return itemView
     }

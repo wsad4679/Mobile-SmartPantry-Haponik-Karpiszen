@@ -47,5 +47,33 @@
     "Quantity": 40,
     "Category": "Life Support",
     "ImageRef": "aid"
+  },
+  {
+    "UUID": "2aefff02-f1f9-4d13-9c3d-e4826b762e58",
+    "Name": "Orange Juice",
+    "Quantity": 40,
+    "Category": "Food",
+    "ImageRef": "food"
+  },
+  {
+    "UUID": "72684130-635e-4a9f-b4ab-2175879b164e",
+    "Name": "Sanitizer",
+    "Quantity": 56,
+    "Category": "Life Support",
+    "ImageRef": "aid"
+  },
+  {
+    "UUID": "ac86b3ac-68af-4748-8595-f545e10a3a75",
+    "Name": "Cheese Block",
+    "Quantity": 33,
+    "Category": "Food",
+    "ImageRef": "food"
+  },
+  {
+    "UUID": "306b7f89-9a98-4040-9d64-7695cad6c9bb",
+    "Name": "Chicken Breast",
+    "Quantity": 101,
+    "Category": "Food",
+    "ImageRef": "food"
   }
 ]
