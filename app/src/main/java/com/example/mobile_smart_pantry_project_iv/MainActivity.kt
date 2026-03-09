@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
 
-    private val inventoryList = mutableListOf<Product>()
+    private var inventoryList = mutableListOf<Product>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,19 +70,6 @@ class MainActivity : AppCompatActivity() {
         productsListView.setOnItemClickListener { _, _, position, _ ->
             productsListView.setItemChecked(position, true)
         }
-
-        val incBtn = binding.increaseProductButton
-        val decrBtn = binding.decreaseProductButton
-
-        incBtn.setOnClickListener {
-            val checkedProduct = productsListView.checkedItemPosition
-            Log.i("Debug", checkedProduct.toString())
-        }
-
-        decrBtn.setOnClickListener {
-
-        }
-
 
         val categorySpinner = binding.categoryFilterSpinner
 

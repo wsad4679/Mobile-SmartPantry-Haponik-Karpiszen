@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContentProviderCompat.requireContext
@@ -41,6 +42,21 @@ class PantryAdapter (private val context: Context,
         quantityTextView.text = "Quantity: ${product.Quantity}"
 
         if (resId !=0) productImageView.setImageResource(resId) else productImageView.setImageResource(R.drawable.error)
+
+        val incBtn = itemView.findViewById<ImageButton>(R.id.incBtn)
+        val decrBtn = itemView.findViewById<ImageButton>(R.id.decrBtn)
+
+        incBtn.setOnClickListener {
+            product.Quantity++;
+            notifyDataSetChanged()
+        }
+
+        decrBtn.setOnClickListener {
+            if (product.Quantity > 0) {
+                product.Quantity--;
+                notifyDataSetChanged()
+            }
+        }
 
         return itemView
     }

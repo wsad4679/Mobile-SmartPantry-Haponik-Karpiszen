@@ -66,9 +66,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:dividerHeight="3dp"
-                android:choiceMode="singleChoice"/>
+                android:choiceMode="none"/>
 
-            <LinearLayout
+            <!--<LinearLayout
                 style="?android:attr/buttonBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -86,5 +86,5 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Zmniejsz ilość" />
-            </LinearLayout>
+            </LinearLayout>-->
 </LinearLayout>
