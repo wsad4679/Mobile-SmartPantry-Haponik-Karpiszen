@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.mobile_smart_pantry_project_iv.databinding.ActivityMainBinding
 import com.example.mobile_smart_pantry_project_iv.model.Product
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
 
@@ -23,6 +24,28 @@ class MainActivity : AppCompatActivity() {
 
     private var inventoryList = mutableListOf<Product>()
 
+
+    private fun dataParser() {
+        try {
+            val jsonString = try {
+                openFileInput("pantry.json").bufferedReader().use { it.readText() }
+            } catch (e: Exception) {
+                resources.openRawResource(R.raw.pantry)
+                    .bufferedReader()
+                    .use { it.readText() }
+            }
+
+            val json = Json { ignoreUnknownKeys = true }
+            val loadedList = json.decodeFromString<List<Product>>(jsonString)
+
+            inventoryList.clear()
+            inventoryList.addAll(loadedList)
+
+        } catch (e: Exception) {
+            Toast.makeText(this, "File read error!", Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,34 +57,7 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-
-//-----------------------|     Parsowanie danych z json do listy     |-------------------------------------------------------------------------------------------------------
-        fun dataParser() {
-            try {
-                val inputStream = resources.openRawResource(R.raw.pantry)
-                val jsonString = inputStream.bufferedReader().use { it.readText() }
-                val json = Json { ignoreUnknownKeys = true }
-                val loadedList = json.decodeFromString<List<Product>>(jsonString)
-
-                inventoryList.clear()
-                inventoryList.addAll(loadedList)
-
-            } catch (e: java.lang.Exception) {
-                Toast.makeText(
-                    this,
-                    "Błąd odczytu pliku!",
-                    Toast.LENGTH_SHORT
-                ).show()
-                e.printStackTrace()
-            }
-        }
-
         dataParser()
-        Log.v("inventoryList", inventoryList.toString())
-//------------------------------------------------------------------------------------------------------------------------------------
-
-
 
         val productsListView : ListView = binding.productListView
         val productsAdapter = PantryAdapter(this, inventoryList)
@@ -113,6 +109,21 @@ class MainActivity : AppCompatActivity() {
             productsListView.adapter = PantryAdapter(this, filteredProducts)
 
             false
+        }
+
+        binding.saveBtn.setOnClickListener {
+            try {
+                val json = Json { ignoreUnknownKeys = true }
+                val jsonString = json.encodeToString(inventoryList)
+
+                openFileOutput("pantry.json", MODE_PRIVATE).use {
+                    it.write(jsonString.toByteArray())
+                }
+
+            } catch (e: Exception) {
+                Toast.makeText(this, "File save error!", Toast.LENGTH_SHORT).show()
+                e.printStackTrace()
+            }
         }
     }
 }
