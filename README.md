@@ -95,5 +95,8 @@ Nie używamy `findViewById`.
 Pamiętajcie, że każda zmiana nazwy ID w XMLu (np. `@+id/btn_save`) zostanie natychmiast odzwierciedlona w kodzie jako` binding.btnSave`. 
 
 
+## 🧑‍🤝‍🧑 *Załoga*:
 
+### 🧑🏻‍🔬 *Lead Engineer* - Szymon Haponik
+### 🧑🏻‍⚕️ *Mission Specialist* - Szymon Karpiszen
 

@@ -1,5 +1,6 @@
 package com.example.mobile_smart_pantry_project_iv
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.util.Log
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -17,6 +19,7 @@ class PantryAdapter (private val context: Context,
                     private val products: List<Product>
     ): ArrayAdapter<Product>(context, 0, products) {
 
+    @SuppressLint("SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 
         val itemView = convertView ?: LayoutInflater.from(context).inflate(
@@ -39,9 +42,9 @@ class PantryAdapter (private val context: Context,
 
         nameTextView.text = product.Name
         categoryTextView.text = product.Category
-        quantityTextView.text = product.Quantity.toString()
+        quantityTextView.text = "Quantity: ${product.Quantity}"
 
-        if (resId !=0) productImageView.setImageResource(resId) else productImageView.setImageResource(R.drawable.ic_launcher_foreground)
+        if (resId !=0) productImageView.setImageResource(resId) else productImageView.setImageResource(R.drawable.error)
 
         if (product.Quantity<=5){
             Log.e("ProductData", product.Name)
@@ -51,7 +54,20 @@ class PantryAdapter (private val context: Context,
         else{
             itemView.findViewById<LinearLayout>(R.id.backgroudLinearLayout).setBackgroundColor(Color.MAGENTA)
         }
+        val incBtn = itemView.findViewById<ImageButton>(R.id.incBtn)
+        val decrBtn = itemView.findViewById<ImageButton>(R.id.decrBtn)
 
+        incBtn.setOnClickListener {
+            product.Quantity++;
+            notifyDataSetChanged()
+        }
+
+        decrBtn.setOnClickListener {
+            if (product.Quantity > 0) {
+                product.Quantity--;
+                notifyDataSetChanged()
+            }
+        }
 
         return itemView
     }

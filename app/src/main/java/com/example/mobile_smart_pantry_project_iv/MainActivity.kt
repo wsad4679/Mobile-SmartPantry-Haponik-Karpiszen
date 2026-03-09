@@ -1,9 +1,11 @@
 package com.example.mobile_smart_pantry_project_iv
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
@@ -20,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
 
-    private val inventoryList = mutableListOf<Product>()
+    private var inventoryList = mutableListOf<Product>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,6 +68,9 @@ class MainActivity : AppCompatActivity() {
         val productsAdapter = PantryAdapter(this, inventoryList)
 
         productsListView.adapter = productsAdapter
+        productsListView.setOnItemClickListener { _, _, position, _ ->
+            productsListView.setItemChecked(position, true)
+        }
 
 
 //------------------------------------------------------------------------------------------------------------------------------------
