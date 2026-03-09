@@ -24,6 +24,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp" />
+    <Button
+        android:id="@+id/deleteProductButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete item"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        />
             <!--    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
@@ -87,4 +95,6 @@
                     android:layout_height="wrap_content"
                     android:text="Zmniejsz ilość" />
             </LinearLayout>-->
+
+
 </LinearLayout>

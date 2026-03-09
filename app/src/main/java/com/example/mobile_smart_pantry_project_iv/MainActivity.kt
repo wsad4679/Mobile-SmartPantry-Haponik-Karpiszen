@@ -24,6 +24,8 @@ class MainActivity : AppCompatActivity() {
 
     private var inventoryList = mutableListOf<Product>()
 
+    private var selectedListElement = -1
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         productsListView.adapter = productsAdapter
         productsListView.setOnItemClickListener { _, _, position, _ ->
             productsListView.setItemChecked(position, true)
+            selectedListElement = position
         }
 
 
@@ -119,7 +122,21 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-//------------------------------------------------------------------------------------------------------------------------------------
+//------------------------ |      Usuwanie elementów z listy      |------------------------------------------------------------------------------------------------------------
+
+        binding.deleteProductButton.setOnClickListener{
+            if (selectedListElement == -1)
+            {
+                Toast.makeText(this, "Najpierw zaznacz element", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                inventoryList.removeAt(selectedListElement)
+                productsListView.adapter = PantryAdapter (this,inventoryList)
+                selectedListElement = -1
+                productsListView.clearChoices()
+            }
+        }
+
 
 
 //--------------------------|      Filtrowanie produktów po nazwie z EditText     |----------------------------------------------------------------------------------------------------------
@@ -127,7 +144,7 @@ class MainActivity : AppCompatActivity() {
 
             val filteringText = binding.productNameFilterEditText.text.toString()
 
-            filteredProducts = filteredProducts.filter {
+            filteredProducts = inventoryList.filter {
                 it.Name.contains(filteringText, ignoreCase = true) //ciągłe sprawdzanie czy nazwa zawiera podany ciąg string
             }
 
