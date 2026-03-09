@@ -125,7 +125,7 @@ class MainActivity : AppCompatActivity() {
 
 //------------------------ |      Usuwanie elementów z listy      |------------------------------------------------------------------------------------------------------------
 
-        binding.deleteProductButton.setOnClickListener{
+        binding.deleteBtn.setOnClickListener{
             if (selectedListElement == -1)
             {
                 Toast.makeText(this, "Najpierw zaznacz element", Toast.LENGTH_SHORT).show()
