@@ -49,10 +49,10 @@ class PantryAdapter (private val context: Context,
         if (product.Quantity<=5){
             Log.e("ProductData", product.Name)
             Log.e("ProductData", product.Quantity.toString())
-            itemView.findViewById<LinearLayout>(R.id.backgroudLinearLayout).setBackgroundColor(Color.RED)
+            itemView.findViewById<LinearLayout>(R.id.backgroudLinearLayout).isEnabled = false
         }
         else{
-            itemView.findViewById<LinearLayout>(R.id.backgroudLinearLayout).setBackgroundColor(Color.MAGENTA)
+            itemView.findViewById<LinearLayout>(R.id.backgroudLinearLayout).isEnabled = true
         }
         val incBtn = itemView.findViewById<ImageButton>(R.id.incBtn)
         val decrBtn = itemView.findViewById<ImageButton>(R.id.decrBtn)
